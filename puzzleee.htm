@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <style>
+            * { box-sizing: border-box; }
+            #hlp{
+                position: absolute;
+                width: 100px;
+                height: 30px;                
+                border-radius: 10px;                
+                padding-top: 2px;
+                padding-left: 8px;
+                background-color: gray;
+            }
+            #hlp-spn{
+                width: 1rem;
+                margin-left: 5px;
+                border-radius: 10px;
+                padding : 2px 11px 2px 11px;                
+                background-color: black;
+                color: white;
+            }
+            #click{
+                position: absolute;                
+                left: 120px;
+                top: -200;
+                width: 95px;
+                height: 30px;
+                border-radius: 10px;
+                padding-top: 2px;
+                padding-left: 7px;
+                background-color: gray;
+            }
+            #time{
+                position: absolute; 
+                top: 628px;               
+                left: 250px;
+                font-size: 20px;
+                width: 115px;
+                height: 30px;
+                border-radius: 10px;
+                padding-top: 2px;                
+                background-color: gray;
+            }
+            #hours{  
+                width: 100px;                                
+                border-radius: 10px;
+                padding : 2px 6px 6px 9px;                
+                background-color: black;
+                color: white;
+            }
+            #lvl{
+                position: relative;                
+                left: 400px;
+                width: 100px;
+                height: 30px;
+                border-radius: 10px;
+                padding-top: 2px;   
+                padding-left: 4px;             
+                background-color: gray;
+            }
+            #lvl-spn{  
+                width: 100px;                
+                border-radius: 10px;
+                padding : 1px 11px 1px 11px;                
+                background-color: black;
+                color: white;
+            }
+            #mins{  
+                width: 100px;                
+                border-radius: 10px;
+                padding : 2px 6px 6px 9px;                
+                background-color: black;
+                color: white;
+            }
+            #seconds{  
+                width: 100px;
+                border-radius: 10px;
+                padding : 2px 6px 6px 9px;                
+                background-color: black;
+                color: white;
+            }
+            #click-spn{  
+                width: 100px;
+                border-radius: 10px;
+                padding : 2px 6px 2px 9px;                
+                background-color: black;
+                color: white;
+            }
+            #puzzle{
+                width: 800px;
+                height: 600px;
+                box-shadow: 0 0 10px black;
+                position: relative;
+            }
+            .fnt{
+                font-size: 200px;
+                width: 600px;
+                height: 800px;
+                background: url(img/won.jpg)center/cover;
+                z-index: 200;
+                color: red;
+                padding: 100px 200px;
+                box-shadow: none;
+                border: 0px;
+            }
+            .div{
+                position: absolute !important;                       
+                box-shadow : 0 0 5px #333 !important;
+            }           
+        </style>
+    </head>
+    <body>
+        <div id="puzzle"></div>
+        <h2 id="hlp">Hint <span id="hlp-spn">3</span></h2>
+        <h2 id="click">Click <span id="click-spn">0</span></h2>
+        <div id="time">
+            <span id="hours">00</span>
+            <span id="mins">00</span>
+            <span id="seconds">00</span>  
+          </div>
+        <h2 id="lvl">Level <span id="lvl-spn">1</span></h2>
+        <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+        <script>
+            $(()=>{
+                const puzzle = $("#puzzle")
+                let lvl = 1;              
+                var hours = 0;
+                var mins = 0;
+                var seconds = 0;
+
+                function startTimer(){
+                    timex = setTimeout(function(){
+                        seconds++;
+                        if(seconds >59){seconds=0;mins++;
+                            if(mins>59) {
+                                mins=0;hours++;
+                                if(hours <10) {$("#hours").text('0'+hours)} 
+                                else $("#hours").text(hours);
+                            }
+                            
+                            if(mins<10){                     
+                                $("#mins").text('0'+mins);}       
+                                else $("#mins").text(mins);
+                            }    
+                            if(seconds <10) {
+                                $("#seconds").text('0'+seconds);} 
+                                else {
+                                    $("#seconds").text(seconds);
+                                }  
+                            startTimer();
+                        },1000);
+                    }
+                startTimer();
+
+                let bool=false;
+                $('body').keydown((e)=>{
+                    if (e.shiftKey==1)
+                    {
+                        puzzle.children().toggle('slow',()=>{
+                            if(bool){
+                                puzzle.css({
+                                    background: `url(img/${lvl}.jpg)`
+                                })                                                              
+                            }
+                            else{
+                                puzzle.css({
+                                    background: 'white'
+                                })                                
+                            }  
+                        })
+                        bool=!bool                          
+                        
+                    }
+                })
+                
+                let clk=0    
+                $('body').mouseup(()=>{
+                    clk++;
+                    if(clk<10){
+                        $('#click').css({width: '95px'})
+                    }
+                    else if(clk<100&&clk>9){
+                        $('#click').css({width:'108px'})
+                    }
+                    else if(clk<1000&&clk>99){
+                        $('#click').css({width:'120px'})
+                    } 
+                    $('#click-spn').text(`${clk}`)
+
+                })
+                
+                
+                let hint=3;
+                function Help(){
+                    let cid=0
+                    let hlp=0
+                    hlp=rand(0,cnt)
+                    for(let row = 0; row<rw; row++)
+                    {
+                        for(let col = 0; col<cl; col++)
+                        {                            
+                            let item = $(`#${cid}`)
+                            if(cid==hlp){                                
+                                if( item.position().left == hgd*col && 
+                                item.position().top == wd*row ){
+                                    hlp=rand(0,cnt)
+                                    Help()
+                                    return
+                                }                                                        
+                                else{
+                                    item.animate({
+                                        left:`${hgd*col}`,
+                                        top:`${wd*row}`                                                                             
+                                    },'slow').css({transform: 'rotate(0deg)'})
+                                    finish()
+                                    return
+                                }
+                            }
+                            cid++
+                        }
+                    }
+                    cid=0
+                    finish()
+                }                
+                
+                $('body').keydown((e)=>{
+                    if (e.keyCode==32)
+                    {
+                        if(hint>0)  {
+                            Help()
+                            hint--
+                            $('#hlp-spn').text(`${hint}`)
+                        }
+                        
+                        
+                    }
+                })     
+                
+                let cl=8;
+                let rw=6;
+                let wd=100;
+                let hgd=100;
+                let cnt=47;
+
+                let id=0;
+                for(let row = 0; row < rw; row++){
+                    for(let col = 0; col < cl; col++){
+                        puzzle.append(`<div id='${id}' class="div"></div>`)
+                        puzzle.children().last().css({
+                            width: '100px',                              
+                            height: '100px',                            
+                            top: rand(0, 600) + 'px',
+                            left: rand(800, $(window).width() - 150) + 'px',
+                            transform: `rotate(${rand(-45, 45)}deg)`,
+                            background: `url(img/${lvl}.jpg) ${-hgd * col}px ${-wd * row}px`                            
+                        })                        
+                        id++
+                    }
+                }                
+                
+                puzzle.children().draggable({
+                    snap: puzzle.children(),
+                    start: function() {
+                        $(this).css({transform: 'rotate(0deg)', zIndex: 100})
+                    },
+                    drag: function() {
+                        
+                    },
+                    stop: function() {                        
+                        $(this).css({
+                            top: `${hgd * Math.round($(this).position().top / hgd)}px`,
+                            left:  `${wd * Math.round($(this).position().left / wd)}px`,
+                            boxShadow: 'none'
+                        })                           
+                        finish()
+                    }
+                })                
+                   
+
+                function finish()
+                {   
+                    id=0              
+                    for(let row = 0; row < rw; row++)
+                    {
+                        for(let col = 0; col < cl; col++)
+                        {
+                            let item = $(`#${id}`) 
+                              
+                            if( item.position().left == hgd*col && 
+                            item.position().top == wd*row ){id++}                                                        
+                            else{
+                                break
+                            }
+                        }
+                    }   
+                    console.log("id- "+`${id}`)
+                    
+                    if(id==cnt+1&&lvl==1){  
+                        hours = 0;
+                        mins = 0;
+                        seconds = 0;                        
+                        clk=0;
+                        hgd=50;
+                        wd=60;
+                        rw=10;
+                        cl=16; 
+                        id=0;
+                        puzzle.children().get().forEach(element => {
+                            element.remove()
+                            console.log('salam')
+                        }); 
+                        lvl++
+                        $("#lvl-spn").text(`${lvl}`)
+                        for(let row = 0; row < rw; row++){
+                            for(let col = 0; col < cl; col++){
+                                puzzle.append(`<div id='${id}' class="div"></div>`)
+                                puzzle.children().last().css({
+                                    width: '50px',                              
+                                    height: '60px',                            
+                                    top: rand(0, 600) + 'px',
+                                    left: rand(800, $(window).width() - 150) + 'px',
+                                    transform: `rotate(${rand(-45, 45)}deg)`,
+                                    background: `url(img/${lvl}.jpg) ${-hgd * col}px ${-wd * row}px`                            
+                                })                        
+                                id++
+                            }
+                        }   
+                        cnt=159;  
+                        
+                        puzzle.children().draggable({
+                            snap: puzzle.children(),
+                            start: function() {
+                                $(this).css({transform: 'rotate(0deg)', zIndex: 100})
+                            },
+                            drag: function() {
+                        
+                            },
+                            stop: function() {                        
+                                $(this).css({
+                                    top: `${wd * Math.round($(this).position().top / wd)}px`,
+                                    left:  `${hgd * Math.round($(this).position().left / hgd)}px`,
+                                 boxShadow: 'none'
+                                })                           
+                                finish()
+                        }
+                })
+                    }
+                    else if(id==cnt+1&&lvl==2){
+                        puzzle.children().hide()
+                        puzzle.append('<div>You Won</div>').addClass('fnt')
+                    }
+                }
+            })
+            
+            function rand(min, max) {
+                return Math.floor(Math.random() * (max - min)) + min;
+            }
+            
+            </script>
+            </body>
+            </html>
